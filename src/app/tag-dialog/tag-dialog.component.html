@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Manage Tags</h2>
+<mat-dialog-content>
+  <mat-chip-listbox>
+    <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+      {{ tag }}
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+  </mat-chip-listbox>
+  <input
+    #tagInput
+    placeholder="Add a tag"
+    (keyup.enter)="addTag(tagInput.value); tagInput.value = ''"
+  />
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-button (click)="saveTags()">Save</button>
+</mat-dialog-actions>

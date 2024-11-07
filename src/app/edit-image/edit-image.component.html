@@ -1,0 +1,18 @@
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput [(ngModel)]="updatedName" placeholder="Image Name" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Tags (comma separated)"
+      [ngModel]="updatedTags.join(', ')"
+      (ngModelChange)="onTagsChange($event)"
+    />
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="saveChanges()">Save</button>
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+</div>

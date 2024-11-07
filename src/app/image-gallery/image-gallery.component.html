@@ -1,0 +1,36 @@
+<div class="toolbar">
+  <mat-form-field>
+    <input
+      matInput
+      placeholder="Search by tag"
+      [(ngModel)]="searchTag"
+      (input)="search()"
+    />
+  </mat-form-field>
+  <button mat-button (click)="resetSearch()">Reset</button>
+
+  <mat-form-field>
+    <mat-label>Sort by</mat-label>
+    <mat-select [(value)]="sortOption" (selectionChange)="sortImages()">
+      <mat-option value="name">Name</mat-option>
+      <mat-option value="date">Date</mat-option>
+      <mat-option value="size">Size</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="openUploadDialog()">
+    Upload Image
+  </button>
+</div>
+
+<div class="gallery">
+  <div class="image-card" *ngFor="let image of images">
+    <img [src]="image.url" (click)="openTagDialog(image)" />
+    <div class="tags">
+      <span *ngFor="let tag of image.tags">{{ tag }}</span>
+      <button mat-icon-button (click)="openTagDialog(image)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

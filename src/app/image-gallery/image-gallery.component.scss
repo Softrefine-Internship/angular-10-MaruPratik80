@@ -1,0 +1,21 @@
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.image-card {
+  position: relative;
+  img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+  }
+  .tags {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    gap: 4px;
+  }
+}
