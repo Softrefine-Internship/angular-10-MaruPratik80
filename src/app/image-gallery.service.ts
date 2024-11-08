@@ -1,58 +1,49 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../environments/environment';
 import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Image } from './image.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageGalleryService {
-  imagesUpdate = new Subject<any[]>();
-  private images: any = [];
-  private imageCollection = [];
+  imagesChanged = new Subject<Image[]>();
+  images: Image[] = [];
 
   constructor(private http: HttpClient) {}
-  uploadImage(image: Image) {
-    console.log(image);
-    return this.http
-      .post(
-        'https://image-gallery-ng-default-rtdb.asia-southeast1.firebasedatabase.app/images.json',
-        image
-      )
-      .pipe(
-        map((res) =>
-          Object.entries(res).map((arr) => {
-            return { id: arr[0], ...arr[1] };
-          })
-        )
-      );
+
+  addImage(image: Image) {
+    console.log(this.images);
+    if (!this.images) this.images = [];
+    this.images.push(image);
+    this.imagesChanged.next(this.images);
+    this.uploadImages();
   }
 
-  getImages() {
-    return this.http
-      .get(
-        'https://image-gallery-ng-default-rtdb.asia-southeast1.firebasedatabase.app/images.json'
-      )
-      .pipe(
-        map((resData) =>
-          resData
-            ? Object.entries(resData).map((arr) => {
-                return { id: arr[0], ...arr[1] };
-              })
-            : resData
-        )
-      );
+  updateimage(id: number, updatedImage: Image) {
+    const index = this.images.findIndex(image => image.id === id);
+    this.images[index] = updatedImage;
+    this.imagesChanged.next(this.images);
+    this.uploadImages();
   }
 
-  addImage(image: Image) {}
+  deleteimage(id: number) {
+    this.images = this.images.filter(image => image.id !== id);
+    this.imagesChanged.next(this.images);
+    this.uploadImages();
+  }
 
-  updateImage(id: string, imageData: Partial<Image>) {}
+  fetchImages() {
+    this.http.get<Image[]>(environment.API_URL + 'images.json').subscribe(images => {
+      this.images = images;
+      this.imagesChanged.next(this.images);
+    });
+  }
 
-  deleteImage(id: string) {
-    this.http.delete(
-      'https://image-gallery-ng-default-rtdb.asia-southeast1.firebasedatabase.app/images.json/' +
-        id
-    );
+  private uploadImages() {
+    this.http.put(environment.API_URL + 'images.json', this.images).subscribe(res => {
+      console.log(res);
+    });
   }
 }

@@ -1,5 +1,6 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-tag-dialog',
@@ -8,12 +9,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class TagDialogComponent {
   tags: string[];
+  isBottomSheet: boolean = false;
 
   constructor(
-    public dialogRef: MatDialogRef<TagDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Optional() public bottomSheetRef: MatBottomSheetRef<TagDialogComponent>,
+    @Optional() @Inject(MAT_BOTTOM_SHEET_DATA) public bottomSheetData: any,
+    @Optional() public dialogRef: MatDialogRef<TagDialogComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
-    this.tags = [...data.tags];
+    this.isBottomSheet = !!this.bottomSheetData;
+    if (this.isBottomSheet) this.tags = [...bottomSheetData.tags];
+    else this.tags = [...dialogData.tags];
   }
 
   addTag(tag: string) {
@@ -23,10 +29,11 @@ export class TagDialogComponent {
   }
 
   removeTag(tag: string) {
-    this.tags = this.tags.filter((t) => t !== tag);
+    this.tags = this.tags.filter(t => t !== tag);
   }
 
   saveTags() {
-    this.dialogRef.close(this.tags);
+    if (this.isBottomSheet) this.bottomSheetRef.dismiss(this.tags);
+    else this.dialogRef.close(this.tags);
   }
 }

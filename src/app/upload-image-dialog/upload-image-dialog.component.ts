@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ImageGalleryService } from '../image-gallery.service';
+import { Image } from '../image.model';
 
 @Component({
   selector: 'app-upload-image-dialog',
@@ -10,26 +10,22 @@ import { ImageGalleryService } from '../image-gallery.service';
 export class UploadImageDialogComponent {
   imageName = '';
   imageFile: File | null = null;
-  dataUrl!: any;
+  url!: any;
   tags: string[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<UploadImageDialogComponent>,
-    private imageGalleryService: ImageGalleryService
   ) {}
 
-  onFileSelected(event: any) {
-    const [file] = event.target.files;
-    this.imageFile = event.target.files[0];
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (e) => {
-      const image = { url: reader.result };
-      console.log(typeof reader.result);
-      this.dataUrl = image;
+  onFileSelected(files: any) {
+    this.imageFile = files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+    reader.onload = e => {
+      this.url = reader.result;
     };
     reader.onerror = function () {
-      console.log(reader.error);
+      console.error(reader.error);
     };
   }
 
@@ -47,21 +43,22 @@ export class UploadImageDialogComponent {
   }
 
   removeTag(tag: string) {
-    this.tags = this.tags.filter((t) => t !== tag);
+    this.tags = this.tags.filter(t => t !== tag);
   }
 
   saveImage() {
     if (this.imageFile) {
-      this.imageGalleryService.uploadImage(this.dataUrl).subscribe((url) => {
-        console.log(url);
-        this.dialogRef.close({
-          name: this.imageName,
-          url: url,
-          tags: this.tags,
-          date: new Date(),
-          size: this.imageFile?.size || 0,
-        });
-      });
+      const newImage: Image = {
+        id: Date.now(),
+        name: this.imageName,
+        url: this.url,
+        tags: this.tags,
+        uploadDate: new Date(),
+        modifiedDate: new Date(),
+        size: this.imageFile?.size || 0,
+      };
+      console.log(newImage);
+      this.dialogRef.close(newImage);
     }
   }
 }

@@ -27,13 +27,13 @@ export class DeleteDialogComponent {
 
   deleteImage() {
     const imageId = this.dialogData?.imageId || this.bottomSheetData?.imageId;
-    if (imageId) {
-      this.imageGalleryService.deleteImage(imageId);
-      if (this.isBottomSheet) {
-        this.bottomSheetRef.dismiss();
-      } else {
-        this.dialogRef.close();
-      }
-    }
+    // if (imageId) {
+    //   this.imageGalleryService.deleteImage(imageId);
+    //   if (this.isBottomSheet) {
+    //     this.bottomSheetRef.dismiss();
+    //   } else {
+    //     this.dialogRef.close();
+    //   }
+    // }
   }
 }

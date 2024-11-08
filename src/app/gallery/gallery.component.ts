@@ -5,7 +5,6 @@ import { Image } from '../image.model';
 import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
-import { EditImageComponent } from '../edit-image/edit-image.component';
 import { ViewImageComponent } from '../view-image/view-image.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
@@ -47,7 +46,7 @@ export class GalleryComponent implements OnInit {
   onSort() {
     this.filteredImages.sort((a, b) => {
       if (this.sortBy === 'name') return a.name.localeCompare(b.name);
-      if (this.sortBy === 'date') return +new Date(b.date) - +new Date(a.date);
+      if (this.sortBy === 'date') return +new Date(b.uploadDate) - +new Date(a.uploadDate);
       if (this.sortBy === 'size') return b.size - a.size;
       return 0;
     });
@@ -70,14 +69,14 @@ export class GalleryComponent implements OnInit {
   }
 
   openEditImageDialog(image: Image) {
-    if (this.isMobile) {
-      this.bottomSheet.open(EditImageComponent, { data: { image } });
-    } else {
-      this.dialog.open(EditImageComponent, {
-        width: '600px',
-        data: { image },
-      });
-    }
+    //   if (this.isMobile) {
+    //     this.bottomSheet.open(EditImageComponent, { data: { image } });
+    //   } else {
+    //     this.dialog.open(EditImageComponent, {
+    //       width: '600px',
+    //       data: { image },
+    //     });
+    //   }
   }
 
   openDeleteDialog(imageId: string) {
@@ -102,10 +101,10 @@ export class GalleryComponent implements OnInit {
   }
 
   private fetchImages() {
-    const sub = this.imageGalleryService.getImages().subscribe((imgs) => {
-      this.images = imgs;
-      this.filteredImages = [...this.images];
-    });
+    // const sub = this.imageGalleryService.getImages().subscribe((imgs) => {
+    //   this.images = imgs;
+    //   this.filteredImages = [...this.images];
+    // });
     // sub.unsubscribe();
   }
 }

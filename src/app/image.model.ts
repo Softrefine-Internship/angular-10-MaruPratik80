@@ -1,8 +1,9 @@
 export interface Image {
-  id?: string;
+  id: number;
   url: string;
   name: string;
   size: number;
-  date: Date;
+  uploadDate: Date;
+  modifiedDate: Date;
   tags: string[];
 }

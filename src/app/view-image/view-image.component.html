@@ -1,9 +1,9 @@
 <div mat-dialog-content>
   <img [src]="data.image.url" alt="{{ data.image.name }}" class="full-image" />
   <p><strong>Name:</strong> {{ data.image.name }}</p>
-  <p><strong>Tags:</strong> {{ data.image.tags.join(", ") }}</p>
+  <p><strong>Tags:</strong> {{ data.image.tags.join(', ') }}</p>
   <p><strong>Size:</strong> {{ data.image.size | number }} bytes</p>
-  <p><strong>Date:</strong> {{ data.image.date | date }}</p>
+  <p><strong>Date:</strong> {{ data.image.uploadDate | date }}</p>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="closeDialog()">Close</button>

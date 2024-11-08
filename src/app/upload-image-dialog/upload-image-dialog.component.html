@@ -1,24 +1,28 @@
 <h2 mat-dialog-title>Upload Image</h2>
 <mat-dialog-content>
   <mat-form-field>
+    <mat-label>Image Name</mat-label>
     <input matInput placeholder="Image Name" [(ngModel)]="imageName" />
   </mat-form-field>
 
-  <input type="file" (change)="onFileSelected($event)" />
+  <div appDropZone (filesChange)="onFileSelected($event)">
+    <input type="file" id="file" accept="image/*" #fileInput (change)="onFileSelected(fileInput.files)" />
+    Drop your image here, or <label for="file">browse</label>
+  </div>
+  <!-- <input type="file" id="file" accept="image/*" (change)="onFileSelected($event)" /> -->
 
-  <mat-chip-grid #chipGrid>
-    <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
-      {{ tag }}
-      <mat-icon matChipRemove>cancel</mat-icon>
-    </mat-chip>
-    <input
-      placeholder="Add a tag"
-      [matChipInputFor]="chipGrid"
-      (matChipInputTokenEnd)="addTag($event)"
-    />
-  </mat-chip-grid>
+  <mat-form-field>
+    <mat-label>Image Tags</mat-label>
+    <mat-chip-grid #chipGrid>
+      <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+        {{ tag }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-grid>
+    <input placeholder="Add a tag" [matChipInputFor]="chipGrid" (matChipInputTokenEnd)="addTag($event)" />
+  </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-button (click)="saveImage()">Save</button>
+  <button mat-raised-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="accent" (click)="saveImage()">Save</button>
 </mat-dialog-actions>

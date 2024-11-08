@@ -1,11 +1,7 @@
 <div class="toolbar">
   <mat-form-field>
-    <input
-      matInput
-      placeholder="Search by tag"
-      [(ngModel)]="searchTag"
-      (input)="search()"
-    />
+    <mat-label>Search</mat-label>
+    <input matInput placeholder="Search by tag" [(ngModel)]="searchTag" (input)="search()" />
   </mat-form-field>
   <button mat-button (click)="resetSearch()">Reset</button>
 
@@ -18,19 +14,22 @@
     </mat-select>
   </mat-form-field>
 
-  <button mat-raised-button color="primary" (click)="openUploadDialog()">
-    Upload Image
-  </button>
+  <button mat-raised-button color="primary" (click)="openUploadDialog()">Upload Image</button>
 </div>
 
 <div class="gallery">
   <div class="image-card" *ngFor="let image of images">
     <img [src]="image.url" (click)="openTagDialog(image)" />
     <div class="tags">
-      <span *ngFor="let tag of image.tags">{{ tag }}</span>
-      <button mat-icon-button (click)="openTagDialog(image)">
-        <mat-icon>add</mat-icon>
-      </button>
+      <mat-chip-listbox>
+        <mat-chip (click)="openTagDialog(image)">
+          <mat-icon>add</mat-icon>
+        </mat-chip>
+        <mat-chip *ngFor="let tag of image.tags | tags; let i = index" (click)="openTagDialog(image)">
+          {{ tag }}
+          <mat-icon matChipRemove *ngIf="i !== 2">cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-listbox>
     </div>
   </div>
 </div>
