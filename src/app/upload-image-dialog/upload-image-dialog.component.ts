@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Optional } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { Image } from '../image.model';
+import { ImageGalleryService } from '../image-gallery.service';
 
 @Component({
   selector: 'app-upload-image-dialog',
@@ -14,8 +16,14 @@ export class UploadImageDialogComponent {
   tags: string[] = [];
 
   constructor(
-    public dialogRef: MatDialogRef<UploadImageDialogComponent>,
+    @Optional() public bottomSheetRef: MatBottomSheetRef<UploadImageDialogComponent>,
+    @Optional() public dialogRef: MatDialogRef<UploadImageDialogComponent>,
+    private imageGalleryService: ImageGalleryService
   ) {}
+
+  get isMobile() {
+    return window.innerWidth < 768;
+  }
 
   onFileSelected(files: any) {
     this.imageFile = files[0];
@@ -46,6 +54,11 @@ export class UploadImageDialogComponent {
     this.tags = this.tags.filter(t => t !== tag);
   }
 
+  close() {
+    if (this.isMobile) this.bottomSheetRef.dismiss();
+    else this.dialogRef.close();
+  }
+
   saveImage() {
     if (this.imageFile) {
       const newImage: Image = {
@@ -58,7 +71,8 @@ export class UploadImageDialogComponent {
         size: this.imageFile?.size || 0,
       };
       console.log(newImage);
-      this.dialogRef.close(newImage);
+      this.imageGalleryService.addImage(newImage);
+      this.close();
     }
   }
 }

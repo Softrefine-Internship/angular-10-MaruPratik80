@@ -1,21 +1,40 @@
-.gallery {
+.search-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  margin: 1.6rem 1.6rem 0;
+
+  button {
+    margin: 1rem 1.6rem 0 0.8rem;
+  }
+
+  .search {
+    flex: 1 1;
+  }
+}
+
+.gallery {
+  padding: 1.6rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  gap: 2rem;
 }
 
 .image-card {
   position: relative;
   img {
     width: 100%;
-    height: auto;
+    object-fit: cover;
+    object-position: center;
+    height: 25rem;
     cursor: pointer;
+
+    &:hover {
+    }
   }
-  .tags {
+  button {
     position: absolute;
-    bottom: 8px;
-    left: 8px;
-    display: flex;
-    gap: 4px;
+    z-index: 100;
+    bottom: 1rem;
+    right: 1rem;
   }
 }

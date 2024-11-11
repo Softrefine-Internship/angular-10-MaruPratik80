@@ -1,39 +1,58 @@
-import { Component, Inject, Optional } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { Image } from '../image.model';
+import { ImageGalleryService } from '../image-gallery.service';
 
 @Component({
   selector: 'app-tag-dialog',
   templateUrl: './tag-dialog.component.html',
   styleUrls: ['./tag-dialog.component.scss'],
 })
-export class TagDialogComponent {
-  tags: string[];
-  isBottomSheet: boolean = false;
+export class TagDialogComponent implements OnInit {
+  image!: Image;
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  constructor(
-    @Optional() public bottomSheetRef: MatBottomSheetRef<TagDialogComponent>,
-    @Optional() @Inject(MAT_BOTTOM_SHEET_DATA) public bottomSheetData: any,
-    @Optional() public dialogRef: MatDialogRef<TagDialogComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
-  ) {
-    this.isBottomSheet = !!this.bottomSheetData;
-    if (this.isBottomSheet) this.tags = [...bottomSheetData.tags];
-    else this.tags = [...dialogData.tags];
+  get isMobile() {
+    return window.innerWidth < 768;
   }
 
-  addTag(tag: string) {
-    if (tag && !this.tags.includes(tag)) {
-      this.tags.push(tag);
+  constructor(
+    @Optional() private bottomSheetRef: MatBottomSheetRef<TagDialogComponent>,
+    @Optional() @Inject(MAT_BOTTOM_SHEET_DATA) private bottomSheetData: Image,
+    @Optional() private dialogRef: MatDialogRef<TagDialogComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) private dialogData: Image,
+    private imageGalleryService: ImageGalleryService
+  ) {}
+
+  ngOnInit(): void {
+    this.image = this.isMobile ? this.bottomSheetData : this.dialogData;
+  }
+
+  addTag(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value && !this.image.tags.includes(value)) {
+      this.image.tags.push(value);
+    }
+    event.chipInput!.clear();
+  }
+
+  removeTag(tag: string): void {
+    const index = this.image.tags.indexOf(tag);
+    if (index >= 0) {
+      this.image.tags.splice(index, 1);
     }
   }
 
-  removeTag(tag: string) {
-    this.tags = this.tags.filter(t => t !== tag);
+  close() {
+    if (this.isMobile) this.bottomSheetRef.dismiss();
+    else this.dialogRef.close();
   }
 
   saveTags() {
-    if (this.isBottomSheet) this.bottomSheetRef.dismiss(this.tags);
-    else this.dialogRef.close(this.tags);
+    this.imageGalleryService.updateImage(this.image.id, this.image);
+    this.close();
   }
 }

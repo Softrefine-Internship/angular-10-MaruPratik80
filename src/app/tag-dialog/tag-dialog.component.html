@@ -1,15 +1,29 @@
-<h2 mat-dialog-title>Manage Tags</h2>
-<mat-dialog-content>
-  <mat-chip-listbox>
-    <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+<header class="header">
+  <h2 mat-dialog-title><mat-icon color="primary">label</mat-icon> Tagging</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</header>
+<div mat-dialog-content class="content">
+  <h3>{{ image.name }}</h3>
+  <p>Add Tags</p>
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Add a tag</mat-label>
+    <input
+      matInput
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="addTag($event)"
+    />
+  </mat-form-field>
+  <mat-chip-grid #chipList>
+    <mat-chip-row *ngFor="let tag of image.tags" [removable]="true" (removed)="removeTag(tag)">
       {{ tag }}
-      <mat-icon matChipRemove>cancel</mat-icon>
-    </mat-chip>
-  </mat-chip-listbox>
-  <input #tagInput placeholder="Add a tag" (keyup.enter)="addTag(tagInput.value); tagInput.value = ''" />
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button *ngIf="isBottomSheet" (click)="bottomSheetRef.dismiss()">Cancel</button>
-  <button mat-button *ngIf="!isBottomSheet" (click)="dialogRef.close()">Cancel</button>
-  <button mat-button (click)="saveTags()">Save</button>
-</mat-dialog-actions>
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+  </mat-chip-grid>
+</div>
+<div mat-dialog-actions align="end" class="actions">
+  <button mat-raised-button color="primary" (click)="saveTags()">Update</button>
+  <button mat-raised-button (click)="close()">Cancel</button>
+</div>

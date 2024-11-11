@@ -9,7 +9,7 @@ import { Image } from './image.model';
 })
 export class ImageGalleryService {
   imagesChanged = new Subject<Image[]>();
-  images: Image[] = [];
+  private images: Image[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -17,27 +17,27 @@ export class ImageGalleryService {
     console.log(this.images);
     if (!this.images) this.images = [];
     this.images.push(image);
-    this.imagesChanged.next(this.images);
+    this.imagesChanged.next(this.images.slice());
     this.uploadImages();
   }
 
-  updateimage(id: number, updatedImage: Image) {
+  updateImage(id: number, updatedImage: Image) {
     const index = this.images.findIndex(image => image.id === id);
     this.images[index] = updatedImage;
-    this.imagesChanged.next(this.images);
+    this.imagesChanged.next(this.images.slice());
     this.uploadImages();
   }
 
-  deleteimage(id: number) {
+  deleteImage(id: number) {
     this.images = this.images.filter(image => image.id !== id);
-    this.imagesChanged.next(this.images);
+    this.imagesChanged.next(this.images.slice());
     this.uploadImages();
   }
 
   fetchImages() {
     this.http.get<Image[]>(environment.API_URL + 'images.json').subscribe(images => {
       this.images = images;
-      this.imagesChanged.next(this.images);
+      this.imagesChanged.next(this.images.slice());
     });
   }
 

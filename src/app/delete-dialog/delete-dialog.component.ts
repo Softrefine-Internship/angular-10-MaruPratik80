@@ -1,39 +1,40 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {
-  MatBottomSheetRef,
-  MAT_BOTTOM_SHEET_DATA,
-} from '@angular/material/bottom-sheet';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { ImageGalleryService } from '../image-gallery.service';
+import { Image } from '../image.model';
 
 @Component({
   selector: 'app-delete-dialog',
   templateUrl: './delete-dialog.component.html',
   styleUrls: ['./delete-dialog.component.scss'],
 })
-export class DeleteDialogComponent {
-  isBottomSheet: boolean = false;
+export class DeleteDialogComponent implements OnInit {
+  image!: Image;
+
+  get isMobile() {
+    return window.innerWidth < 768;
+  }
 
   constructor(
-    @Inject(MAT_BOTTOM_SHEET_DATA)
-    public bottomSheetData: { imageId: string } | null,
-    @Inject(MAT_DIALOG_DATA) public dialogData: { imageId: string } | null,
-    public dialogRef: MatDialogRef<DeleteDialogComponent>,
-    private bottomSheetRef: MatBottomSheetRef<DeleteDialogComponent>,
+    @Optional() private bottomSheetRef: MatBottomSheetRef<DeleteDialogComponent>,
+    @Optional() @Inject(MAT_BOTTOM_SHEET_DATA) private bottomSheetData: Image,
+    @Optional() private dialogRef: MatDialogRef<DeleteDialogComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) private dialogData: Image,
     private imageGalleryService: ImageGalleryService
-  ) {
-    this.isBottomSheet = !!this.bottomSheetData;
+  ) {}
+
+  ngOnInit(): void {
+    this.image = this.isMobile ? this.bottomSheetData : this.dialogData;
+  }
+
+  close() {
+    if (this.isMobile) this.bottomSheetRef.dismiss();
+    else this.dialogRef.close();
   }
 
   deleteImage() {
-    const imageId = this.dialogData?.imageId || this.bottomSheetData?.imageId;
-    // if (imageId) {
-    //   this.imageGalleryService.deleteImage(imageId);
-    //   if (this.isBottomSheet) {
-    //     this.bottomSheetRef.dismiss();
-    //   } else {
-    //     this.dialogRef.close();
-    //   }
-    // }
+    this.imageGalleryService.deleteImage(this.image.id);
+    this.close();
   }
 }

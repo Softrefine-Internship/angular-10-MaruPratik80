@@ -1,11 +1,14 @@
-import { Component, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Subscription } from 'rxjs';
 
 import { UploadImageDialogComponent } from '../upload-image-dialog/upload-image-dialog.component';
 import { TagDialogComponent } from '../tag-dialog/tag-dialog.component';
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { ImageGalleryService } from '../image-gallery.service';
 import { Image } from '../image.model';
 
@@ -16,75 +19,89 @@ import { Image } from '../image.model';
 })
 export class ImageGalleryComponent implements OnInit, OnDestroy {
   images: Image[] = [];
-  loadedImages: Image[] = [];
   searchTag: string = '';
-  sortOption: string = 'name';
+  searchTags: string[] = [];
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+  sortBy: keyof Image = 'name';
   imagesSub!: Subscription;
-  isMobile: boolean = false;
 
   constructor(
+    private imageGalleryService: ImageGalleryService,
     private dialog: MatDialog,
-    private bottomSheet: MatBottomSheet,
-    private breakpointObserver: BreakpointObserver,
-    private imageGalleryService: ImageGalleryService
+    private bottomSheet: MatBottomSheet
   ) {}
+
+  announcer = inject(LiveAnnouncer);
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+    if (value) {
+      this.searchTags.push(value);
+    }
+    event.chipInput!.clear();
+  }
+
+  remove(tag: string): void {
+    const index = this.searchTags.indexOf(tag);
+    if (index >= 0) {
+      this.searchTags.splice(index, 1);
+      this.announcer.announce(`Removed ${tag}`);
+    }
+  }
+
+  edit(tag: string, event: MatChipEditedEvent) {
+    const value = event.value.trim();
+    if (!value) {
+      this.remove(tag);
+      return;
+    }
+    const index = this.searchTags.indexOf(tag);
+    if (index >= 0) {
+      this.searchTags[index] = value;
+    }
+  }
+
+  get isMobile() {
+    return window.innerWidth < 768;
+  }
+
+  get filteredImages() {
+    return (
+      this.images
+        // .filter(image => image.tags.join(', ').toLowerCase().includes(this.searchTag.trim().toLowerCase()))
+        .filter(image =>
+          this.searchTags.length > 0
+            ? image.tags.some(tag => this.searchTags.some(searchTag => searchTag === tag))
+            : true
+        )
+        .sort((a: Image, b: Image) => (a[this.sortBy] > b[this.sortBy] ? 1 : -1))
+    );
+  }
 
   ngOnInit() {
     this.imagesSub = this.imageGalleryService.imagesChanged.subscribe(images => {
-      this.loadedImages = images;
-      this.images = this.loadedImages;
+      this.images = images;
     });
-
-    this.breakpointObserver.observe([Breakpoints.Handset, '(max-width: 768px)']).subscribe(result => {
-      this.isMobile = result.matches;
-    });
-  }
-
-  openUploadDialog() {
-    const dialogRef = this.dialog.open(UploadImageDialogComponent);
-    dialogRef.afterClosed().subscribe(newImage => {
-      if (newImage) this.imageGalleryService.addImage(newImage);
-    });
-  }
-
-  openTagDialog(image: Image) {
-    if (this.isMobile) {
-      const bottomSheetRef = this.bottomSheet.open(TagDialogComponent, {
-        data: image,
-      });
-      bottomSheetRef.afterDismissed().subscribe(updatedTags => {
-        if (updatedTags) {
-          image.tags = updatedTags;
-          this.imageGalleryService.updateimage(image.id, image);
-        }
-      });
-    } else {
-      const dialogRef = this.dialog.open(TagDialogComponent, { data: image });
-      dialogRef.afterClosed().subscribe(updatedTags => {
-        if (updatedTags) {
-          image.tags = updatedTags;
-          this.imageGalleryService.updateimage(image.id, image);
-        }
-      });
-    }
-  }
-
-  search() {
-    if (this.searchTag) {
-      this.images = this.images.filter(image => image.tags.includes(this.searchTag));
-    }
   }
 
   resetSearch() {
     this.searchTag = '';
+    this.searchTags = [];
   }
 
-  sortImages() {
-    this.images.slice().sort((a, b) => {
-      if (this.sortOption === 'name') return a.name.localeCompare(b.name);
-      if (this.sortOption === 'date') return +new Date(a.uploadDate) - +new Date(b.uploadDate);
-      return a.size - b.size;
-    });
+  openUploadDialog() {
+    if (this.isMobile) this.bottomSheet.open(UploadImageDialogComponent);
+    else this.dialog.open(UploadImageDialogComponent);
+  }
+
+  openTagDialog(image: Image) {
+    if (this.isMobile) this.bottomSheet.open(TagDialogComponent, { data: image });
+    else this.dialog.open(TagDialogComponent, { data: image });
+  }
+
+  openDeleteDialog(image: Image) {
+    if (this.isMobile) this.bottomSheet.open(DeleteDialogComponent, { data: image });
+    else this.dialog.open(DeleteDialogComponent, { data: image });
   }
 
   ngOnDestroy(): void {

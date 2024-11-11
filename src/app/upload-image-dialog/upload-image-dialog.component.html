@@ -9,7 +9,6 @@
     <input type="file" id="file" accept="image/*" #fileInput (change)="onFileSelected(fileInput.files)" />
     Drop your image here, or <label for="file">browse</label>
   </div>
-  <!-- <input type="file" id="file" accept="image/*" (change)="onFileSelected($event)" /> -->
 
   <mat-form-field>
     <mat-label>Image Tags</mat-label>
@@ -23,6 +22,6 @@
   </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-raised-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button (click)="close()">Cancel</button>
   <button mat-raised-button color="accent" (click)="saveImage()">Save</button>
 </mat-dialog-actions>
