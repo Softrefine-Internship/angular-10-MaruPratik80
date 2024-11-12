@@ -1,15 +1,23 @@
 .search-bar {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 1.6rem 1.6rem 0;
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  align-items: center;
+  gap: 1.6rem;
+  margin: 1.6rem;
+  margin-bottom: 0;
 
-  button {
-    margin: 1rem 1.6rem 0 0.8rem;
+  @media only screen and (max-width: 48em) {
+    grid-template-columns: max-content 1fr;
+    .search {
+      grid-column: 1/-1;
+    }
   }
+}
 
-  .search {
-    flex: 1 1;
-  }
+.spinner {
+  margin-top: 25svh;
+  display: grid;
+  place-items: center;
 }
 
 .gallery {
@@ -20,21 +28,99 @@
 }
 
 .image-card {
-  position: relative;
+  overflow: hidden;
+  height: 25rem;
+  transition: all 0.2s;
+
+  &:hover {
+    box-shadow: 0 1rem 2rem rgba(#000, 0.25);
+  }
+
   img {
     width: 100%;
+    height: 100%;
     object-fit: cover;
     object-position: center;
-    height: 25rem;
     cursor: pointer;
-
-    &:hover {
-    }
   }
-  button {
+
+  .actions {
     position: absolute;
     z-index: 100;
-    bottom: 1rem;
+    top: 1rem;
     right: 1rem;
+  }
+
+  .tags {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 0.5rem;
+    left: 1rem;
+
+    .tags-list {
+      ::ng-deep {
+        div {
+          margin-left: 0;
+        }
+      }
+      .label {
+        color: #777;
+      }
+    }
+
+    .tag {
+      ::ng-deep {
+        span span span:has(.label) {
+          padding-right: 0 !important;
+        }
+      }
+    }
+
+    .btn-add-tag {
+      width: 3rem !important;
+      height: 3rem !important;
+      padding: 0px !important;
+      background-color: #e0e0e0;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+
+      & > *[role='img'] {
+        color: #777;
+        width: 2rem;
+        height: 2rem;
+        font-size: 2rem;
+        transition: all 0.2s;
+      }
+      &:hover {
+        & > *[role='img'] {
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 32em) {
+  .gallery {
+    grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  }
+}
+
+@media only screen and (min-width: 80em) {
+  .gallery {
+    grid-template-columns: repeat(auto-fit, minmax(37rem, 1fr));
+  }
+  .image-card {
+    height: 30rem;
+  }
+}
+@media only screen and (min-width: 120em) {
+  .gallery {
+    grid-template-columns: repeat(auto-fit, minmax(45rem, 1fr));
+  }
+  .image-card {
+    height: 35rem;
   }
 }

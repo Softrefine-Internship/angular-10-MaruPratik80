@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   exports: [
@@ -22,11 +23,18 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: { enterAnimationDuration: 300, exitAnimationDuration: 150 },
+      useValue: {
+        enterAnimationDuration: 300,
+        exitAnimationDuration: 150,
+        maxHeight: '80svh',
+        maxWidth: '90vw',
+        minWidth: '60rem',
+      },
     },
   ],
 })

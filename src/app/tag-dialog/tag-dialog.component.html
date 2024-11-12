@@ -5,7 +5,7 @@
 <div mat-dialog-content class="content">
   <h3>{{ image.name }}</h3>
   <p>Add Tags</p>
-  <mat-form-field class="full-width" appearance="fill">
+  <mat-form-field class="full-width" appearance="outline">
     <mat-label>Add a tag</mat-label>
     <input
       matInput
@@ -15,7 +15,7 @@
     />
   </mat-form-field>
   <mat-chip-grid #chipList>
-    <mat-chip-row *ngFor="let tag of image.tags" [removable]="true" (removed)="removeTag(tag)">
+    <mat-chip-row *ngFor="let tag of tags" [removable]="true" (removed)="removeTag(tag)">
       {{ tag }}
       <button matChipRemove>
         <mat-icon>cancel</mat-icon>

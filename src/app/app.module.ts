@@ -3,17 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './material.module';
+import { MaterialModule } from './material/material.module';
 
 import { AppComponent } from './app.component';
 import { ImageGalleryComponent } from './image-gallery/image-gallery.component';
 import { UploadImageDialogComponent } from './upload-image-dialog/upload-image-dialog.component';
 import { TagDialogComponent } from './tag-dialog/tag-dialog.component';
-import { GalleryComponent } from './gallery/gallery.component';
-import { ViewImageComponent } from './view-image/view-image.component';
+import { ViewImageDialogComponent } from './view-image-dialog/view-image-dialog.component';
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { DropZoneDirective } from './drop-zone.directive';
-import { TagsPipe } from './tags.pipe';
+import { SizePipe } from './view-image-dialog/size.pipe';
 
 @NgModule({
   declarations: [
@@ -21,11 +20,10 @@ import { TagsPipe } from './tags.pipe';
     ImageGalleryComponent,
     UploadImageDialogComponent,
     TagDialogComponent,
-    GalleryComponent,
-    ViewImageComponent,
+    ViewImageDialogComponent,
     DeleteDialogComponent,
     DropZoneDirective,
-    TagsPipe,
+    SizePipe,
   ],
   imports: [BrowserModule, FormsModule, HttpClientModule, BrowserAnimationsModule, MaterialModule],
   providers: [],

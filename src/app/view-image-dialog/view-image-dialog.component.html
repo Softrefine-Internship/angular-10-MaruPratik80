@@ -1,0 +1,29 @@
+<div mat-dialog-content class="view-image-card">
+  <div class="image-box">
+    <img mat-card-image [src]="image.url" alt="{{ image.name }}" class="full-image" />
+
+    <div class="tags">
+      <button mat-icon-button (click)="openTagDialog()" class="btn-add-tag">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+      <mat-chip-listbox class="tags-list">
+        <mat-chip *ngFor="let tag of image.tags.slice(0, 2)" (click)="openTagDialog()" class="tag">
+          <mat-icon matChipAvatar class="label">label</mat-icon>
+          {{ tag }}
+        </mat-chip>
+        <mat-chip *ngIf="image.tags.length > 2" (click)="openTagDialog()">
+          +{{ image.tags.length - 2 }}
+        </mat-chip>
+      </mat-chip-listbox>
+    </div>
+  </div>
+
+  <div class="image-details">
+    <h2 *ngIf="!isMobile">Image Details</h2>
+    <p><strong>Name:</strong> {{ image.name }}</p>
+    <p><strong>Size:</strong> {{ image.size | size }}</p>
+    <p><strong>Uploaded Date:</strong> {{ image.uploadDate | date : 'medium' }}</p>
+    <p><strong>Modified Date:</strong> {{ image.modifiedDate | date : 'medium' }}</p>
+  </div>
+  <button mat-icon-button class="btn-close" (click)="close()"><mat-icon>close</mat-icon></button>
+</div>

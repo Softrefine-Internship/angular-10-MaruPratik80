@@ -11,6 +11,7 @@ import { TagDialogComponent } from '../tag-dialog/tag-dialog.component';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { ImageGalleryService } from '../image-gallery.service';
 import { Image } from '../image.model';
+import { ViewImageDialogComponent } from '../view-image-dialog/view-image-dialog.component';
 
 @Component({
   selector: 'app-image-gallery',
@@ -22,7 +23,7 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
   searchTag: string = '';
   searchTags: string[] = [];
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  sortBy: keyof Image = 'name';
+  sortBy!: keyof Image;
   imagesSub!: Subscription;
 
   constructor(
@@ -74,7 +75,7 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
             ? image.tags.some(tag => this.searchTags.some(searchTag => searchTag === tag))
             : true
         )
-        .sort((a: Image, b: Image) => (a[this.sortBy] > b[this.sortBy] ? 1 : -1))
+        .sort((a: Image, b: Image) => (b[this.sortBy] > a[this.sortBy] ? -1 : 1))
     );
   }
 
@@ -94,6 +95,11 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
     else this.dialog.open(UploadImageDialogComponent);
   }
 
+  openViewImageDialog(image: Image) {
+    if (this.isMobile) this.bottomSheet.open(ViewImageDialogComponent, { data: image });
+    else this.dialog.open(ViewImageDialogComponent, { data: image });
+  }
+
   openTagDialog(image: Image) {
     if (this.isMobile) this.bottomSheet.open(TagDialogComponent, { data: image });
     else this.dialog.open(TagDialogComponent, { data: image });
@@ -101,7 +107,7 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
 
   openDeleteDialog(image: Image) {
     if (this.isMobile) this.bottomSheet.open(DeleteDialogComponent, { data: image });
-    else this.dialog.open(DeleteDialogComponent, { data: image });
+    else this.dialog.open(DeleteDialogComponent, { data: image, minWidth: '30rem', width: '33rem' });
   }
 
   ngOnDestroy(): void {

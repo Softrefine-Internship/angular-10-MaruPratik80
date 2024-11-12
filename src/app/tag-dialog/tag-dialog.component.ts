@@ -13,6 +13,7 @@ import { ImageGalleryService } from '../image-gallery.service';
 })
 export class TagDialogComponent implements OnInit {
   image!: Image;
+  tags: string[] = [];
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   get isMobile() {
@@ -29,20 +30,21 @@ export class TagDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.image = this.isMobile ? this.bottomSheetData : this.dialogData;
+    this.tags = this.image.tags.slice();
   }
 
   addTag(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-    if (value && !this.image.tags.includes(value)) {
-      this.image.tags.push(value);
+    if (value && !this.tags.includes(value)) {
+      this.tags.push(value);
     }
     event.chipInput!.clear();
   }
 
   removeTag(tag: string): void {
-    const index = this.image.tags.indexOf(tag);
+    const index = this.tags.indexOf(tag);
     if (index >= 0) {
-      this.image.tags.splice(index, 1);
+      this.tags.splice(index, 1);
     }
   }
 
@@ -52,6 +54,8 @@ export class TagDialogComponent implements OnInit {
   }
 
   saveTags() {
+    this.image.tags = this.tags;
+    this.image.modifiedDate = new Date();
     this.imageGalleryService.updateImage(this.image.id, this.image);
     this.close();
   }
