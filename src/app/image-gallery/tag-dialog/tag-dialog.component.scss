@@ -1,5 +1,5 @@
 .header {
-  padding: 1.2rem 1.6rem;
+  padding: 1.2rem 1.6rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -12,13 +12,26 @@
     align-items: center;
   }
 }
+
+.full-width {
+  width: 100%;
+}
+
 .content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 .actions {
-  margin-bottom: 2rem;
+  margin: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.2rem;
+}
+
+@media only screen and (width < 48em) {
+  .header {
+    padding: 0;
+  }
 }

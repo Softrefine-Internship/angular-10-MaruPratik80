@@ -6,12 +6,12 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Subscription } from 'rxjs';
 
-import { UploadImageDialogComponent } from '../upload-image-dialog/upload-image-dialog.component';
-import { TagDialogComponent } from '../tag-dialog/tag-dialog.component';
-import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
-import { ImageGalleryService } from '../image-gallery.service';
-import { Image } from '../image.model';
-import { ViewImageDialogComponent } from '../view-image-dialog/view-image-dialog.component';
+import { UploadImageDialogComponent } from './upload-image-dialog/upload-image-dialog.component';
+import { TagDialogComponent } from './tag-dialog/tag-dialog.component';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { ImageGalleryService } from '../image-gallery/image-gallery.service';
+import { Image } from './image.model';
+import { ViewImageDialogComponent } from './view-image-dialog/view-image-dialog.component';
 
 @Component({
   selector: 'app-image-gallery',
@@ -19,10 +19,10 @@ import { ViewImageDialogComponent } from '../view-image-dialog/view-image-dialog
   styleUrls: ['./image-gallery.component.scss'],
 })
 export class ImageGalleryComponent implements OnInit, OnDestroy {
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
   images: Image[] = [];
   searchTag: string = '';
   searchTags: string[] = [];
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
   sortBy!: keyof Image;
   imagesSub!: Subscription;
 
@@ -70,12 +70,16 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
     return (
       this.images
         // .filter(image => image.tags.join(', ').toLowerCase().includes(this.searchTag.trim().toLowerCase()))
-        .filter(image =>
-          this.searchTags.length > 0
-            ? image.tags.some(tag => this.searchTags.some(searchTag => searchTag === tag))
-            : true
-        )
-        .sort((a: Image, b: Image) => (b[this.sortBy] > a[this.sortBy] ? -1 : 1))
+        .filter(image => {
+          if (this.searchTags.length === 0) return true;
+          return image.tags.some(tag =>
+            this.searchTags.some(searchTag => searchTag.toLowerCase() === tag.toLowerCase())
+          );
+        })
+        .sort((a: Image, b: Image) => {
+          if (this.sortBy === 'name') return a.name.localeCompare(b.name, 'en-IN', { sensitivity: 'base' });
+          return (a[this.sortBy] as number) - (b[this.sortBy] as number);
+        })
     );
   }
 
@@ -90,9 +94,9 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
     this.searchTags = [];
   }
 
-  openUploadDialog() {
-    if (this.isMobile) this.bottomSheet.open(UploadImageDialogComponent);
-    else this.dialog.open(UploadImageDialogComponent);
+  openUploadDialog(image: Image | null = null) {
+    if (this.isMobile) this.bottomSheet.open(UploadImageDialogComponent, { data: image });
+    else this.dialog.open(UploadImageDialogComponent, { data: image });
   }
 
   openViewImageDialog(image: Image) {

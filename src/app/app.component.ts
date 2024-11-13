@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
-import { ImageGalleryService } from './image-gallery.service';
-import { UploadImageDialogComponent } from './upload-image-dialog/upload-image-dialog.component';
+import { ImageGalleryService } from './image-gallery/image-gallery.service';
+import { UploadImageDialogComponent } from './image-gallery/upload-image-dialog/upload-image-dialog.component';
 
 @Component({
   selector: 'app-root',

@@ -1,10 +1,10 @@
 <div mat-dialog-content class="view-image-card">
   <div class="image-box">
-    <img mat-card-image [src]="image.url" alt="{{ image.name }}" class="full-image" />
+    <img [src]="image.url" alt="{{ image.name }}" class="full-image" />
 
     <div class="tags">
       <button mat-icon-button (click)="openTagDialog()" class="btn-add-tag">
-        <mat-icon>add_circle_outline</mat-icon>
+        <mat-icon class="btn-add-tag__icon">add_circle_outline</mat-icon>
       </button>
       <mat-chip-listbox class="tags-list">
         <mat-chip *ngFor="let tag of image.tags.slice(0, 2)" (click)="openTagDialog()" class="tag">

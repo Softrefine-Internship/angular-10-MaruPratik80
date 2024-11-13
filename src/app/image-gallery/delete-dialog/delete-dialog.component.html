@@ -1,12 +1,12 @@
 <header class="header">
-  <h2 mat-dialog-title><mat-icon color="primary">delete</mat-icon> Delete</h2>
+  <h2 mat-dialog-title><mat-icon color="primary">delete</mat-icon>Delete</h2>
   <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
 </header>
 <div mat-dialog-content class="content">
   <p>
     Are you sure you would like to Delete <strong>{{ image.name }}</strong> Image?
   </p>
-  <mat-icon>delete</mat-icon>
+  <mat-icon class="delete-icon">delete</mat-icon>
 </div>
 <div mat-dialog-actions align="center" class="actions">
   <button mat-raised-button color="warn" (click)="deleteImage()">Delete</button>

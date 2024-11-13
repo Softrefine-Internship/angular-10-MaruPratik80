@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Image } from '../image.model';
 import { ImageGalleryService } from '../image-gallery.service';
@@ -45,6 +45,18 @@ export class TagDialogComponent implements OnInit {
     const index = this.tags.indexOf(tag);
     if (index >= 0) {
       this.tags.splice(index, 1);
+    }
+  }
+
+  editTag(tag: string, event: MatChipEditedEvent) {
+    const value = event.value.trim();
+    if (!value) {
+      this.removeTag(tag);
+      return;
+    }
+    const index = this.tags.indexOf(tag);
+    if (index >= 0) {
+      this.tags[index] = value;
     }
   }
 

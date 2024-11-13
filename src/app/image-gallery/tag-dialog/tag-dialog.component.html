@@ -1,24 +1,31 @@
 <header class="header">
-  <h2 mat-dialog-title><mat-icon color="primary">label</mat-icon> Tagging</h2>
+  <h2 mat-dialog-title><mat-icon color="primary">label</mat-icon>Tagging</h2>
   <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
 </header>
 <div mat-dialog-content class="content">
-  <h3>{{ image.name }}</h3>
+  <h2>{{ image.name }}</h2>
   <p>Add Tags</p>
-  <mat-form-field class="full-width" appearance="outline">
+  <mat-form-field class="full-width" >
     <mat-label>Add a tag</mat-label>
     <input
       matInput
-      [matChipInputFor]="chipList"
+      [matChipInputFor]="chipGrid"
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="true"
       (matChipInputTokenEnd)="addTag($event)"
     />
   </mat-form-field>
-  <mat-chip-grid #chipList>
-    <mat-chip-row *ngFor="let tag of tags" [removable]="true" (removed)="removeTag(tag)">
+  <mat-chip-grid #chipGrid>
+    <mat-chip-row
+      *ngFor="let tag of tags"
+      [removable]="true"
+      (removed)="removeTag(tag)"
+      [editable]="true"
+      (edited)="editTag(tag, $event)"
+    >
       {{ tag }}
       <button matChipRemove>
-        <mat-icon>cancel</mat-icon>
+        <mat-icon>close</mat-icon>
       </button>
     </mat-chip-row>
   </mat-chip-grid>

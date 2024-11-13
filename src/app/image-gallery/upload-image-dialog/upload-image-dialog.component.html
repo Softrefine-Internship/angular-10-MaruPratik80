@@ -1,0 +1,59 @@
+<header class="header">
+  <h2 mat-dialog-title><mat-icon color="primary">upload</mat-icon>Upload Image</h2>
+  <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
+</header>
+<div mat-dialog-content>
+  <mat-form-field class="full-width" hideRequiredMarker="true">
+    <mat-label>Image Name</mat-label>
+    <input matInput [formControl]="nameInput" type="text" />
+    <mat-error *ngIf="nameInput.invalid">Name is required</mat-error>
+  </mat-form-field>
+
+  <div appDropZone (filesChange)="onFileSelected($event)" class="dropzone" (click)="fileInput.click()">
+    <input
+      type="file"
+      accept="image/*"
+      #fileInput
+      (change)="onFileSelected(fileInput.files)"
+      class="dropzone__input"
+    />
+    <div *ngIf="!url" class="upload">
+      <mat-icon class="dropzone__icon">add_photo_alternate</mat-icon>
+      <p class="dropzone__text">Drop your image here, or <span class="dropzone__browse">browse</span></p>
+    </div>
+    <div *ngIf="url" class="preview">
+      <button mat-icon-button class="btn-edit">
+        <mat-icon class="btn-edit__icon">edit</mat-icon>
+      </button>
+      <img [src]="url" class="preview__img" />
+      <span class="preview__error">{{ error }}</span>
+    </div>
+  </div>
+
+  <mat-form-field class="full-width" hintLabel="You can search image with tags">
+    <mat-label>Image Tags</mat-label>
+    <mat-chip-grid #chipGrid aria-label="Enter tags">
+      <mat-chip-row
+        *ngFor="let tag of tags"
+        (removed)="removeTag(tag)"
+        [editable]="true"
+        (edited)="editTag(tag, $event)"
+      >
+        {{ tag }}
+        <mat-icon matChipRemove>close</mat-icon>
+      </mat-chip-row>
+      <input
+        placeholder="Add a tag"
+        [matChipInputFor]="chipGrid"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        [matChipInputAddOnBlur]="true"
+        (matChipInputTokenEnd)="addTag($event)"
+      />
+    </mat-chip-grid>
+    <mat-hint></mat-hint>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions class="actions" align="end">
+  <button mat-raised-button color="primary" (click)="saveImage()">Save</button>
+  <button mat-raised-button (click)="close()">Cancel</button>
+</div>

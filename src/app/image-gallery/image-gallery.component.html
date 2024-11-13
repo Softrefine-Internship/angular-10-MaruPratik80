@@ -3,7 +3,7 @@
     <mat-label>Search</mat-label>
     <input matInput placeholder="Search by tag" [(ngModel)]="searchTag" />
   </mat-form-field> -->
-  <mat-form-field class="search" subscriptSizing="dynamic" appearance="outline">
+  <mat-form-field class="search" subscriptSizing="dynamic">
     <mat-label>Serch by tag</mat-label>
     <mat-chip-grid #chipGrid aria-label="Enter tags">
       <mat-chip-row
@@ -22,7 +22,6 @@
         placeholder="Enter tag..."
         [matChipInputFor]="chipGrid"
         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        [matChipInputAddOnBlur]="true"
         (matChipInputTokenEnd)="add($event)"
       />
     </mat-chip-grid>
@@ -30,7 +29,7 @@
 
   <button mat-raised-button color="primary" (click)="resetSearch()">Reset</button>
 
-  <mat-form-field subscriptSizing="dynamic" appearance="outline" class="sort">
+  <mat-form-field subscriptSizing="dynamic" class="sort">
     <mat-label>Sort by</mat-label>
     <mat-select [(value)]="sortBy">
       <mat-option value="name">Name</mat-option>
@@ -44,15 +43,20 @@
   <mat-spinner mode="indeterminate" color="accent" />
 </div>
 
-<div class="gallery">
+<div class="gallery" *ngIf="images.length > 0">
   <mat-card *ngFor="let image of filteredImages" class="image-card">
     <img mat-card-image [src]="image.url" [alt]="image.name" (click)="openViewImageDialog(image)" />
     <div class="actions">
-      <button mat-mini-fab color="warn" (click)="openDeleteDialog(image)"><mat-icon>delete</mat-icon></button>
+      <button (click)="openUploadDialog(image)" class="btn">
+        <mat-icon class="btn__icon btn__icon--edit" color="accent">edit</mat-icon>
+      </button>
+      <button (click)="openDeleteDialog(image)" class="btn">
+        <mat-icon class="btn__icon btn__icon--edit" color="warn">delete</mat-icon>
+      </button>
     </div>
     <div class="tags">
       <button mat-icon-button (click)="openTagDialog(image)" class="btn-add-tag">
-        <mat-icon>add_circle_outline</mat-icon>
+        <mat-icon class="btn-add-tag__icon">add_circle_outline</mat-icon>
       </button>
       <mat-chip-listbox class="tags-list">
         <mat-chip *ngFor="let tag of image.tags.slice(0, 2)" (click)="openTagDialog(image)" class="tag">
@@ -65,4 +69,10 @@
       </mat-chip-listbox>
     </div>
   </mat-card>
+  <div class="image-card upload-area" (click)="openUploadDialog()">
+    <button mat-icon-button class="btn-upload">
+      <mat-icon class="btn-upload__icon">add_circle_outline</mat-icon>
+    </button>
+    <p class="upload-area__text">Insert Image</p>
+  </div>
 </div>

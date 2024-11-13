@@ -1,0 +1,41 @@
+.header {
+  padding: 1.2rem 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h2 {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  .delete-icon {
+    color: #999;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+@media only screen and (width < 48em) {
+  .header {
+    padding: 0;
+  }
+  .content {
+    margin-bottom: 2rem;
+  }
+}

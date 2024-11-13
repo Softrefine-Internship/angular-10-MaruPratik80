@@ -5,10 +5,20 @@
   max-height: 100%;
 
   .btn-close {
-    background-color: rgba(#fff, 0.5);
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
+    z-index: 9999;
+
+    padding: 0.4rem;
+    height: 3.2rem;
+    width: 3.2rem;
+    ::ng-deep {
+      span.mat-mdc-button-touch-target {
+        height: 3.2rem;
+        width: 3.2rem;
+      }
+    }
   }
 
   .image-details {
@@ -53,30 +63,35 @@
 
       .tag {
         ::ng-deep {
-          span span span:has(.label) {
-            padding-right: 0 !important;
+          span span {
+            cursor: pointer;
+            span:has(.label) {
+              padding-right: 0;
+            }
           }
         }
       }
 
       .btn-add-tag {
-        width: 3rem !important;
-        height: 3rem !important;
-        padding: 0px !important;
+        width: 3.2rem;
+        height: 3.2rem;
+        padding: 0.4rem;
         background-color: #e0e0e0;
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-
-        & > *[role='img'] {
+        ::ng-deep {
+          span.mat-mdc-button-touch-target {
+            height: 3.2rem;
+            width: 3.2rem;
+          }
+        }
+        &__icon {
           color: #777;
-          width: 2rem;
-          height: 2rem;
-          font-size: 2rem;
+          width: 2.4rem;
+          height: 2.4rem;
+          font-size: 2.4rem;
           transition: all 0.2s;
         }
         &:hover {
-          & > *[role='img'] {
+          .btn-add-tag__icon {
             color: #333;
           }
         }
@@ -84,8 +99,14 @@
     }
   }
 
-  @media only screen and (max-width: 48em) {
+  @media only screen and (width < 48em) {
     flex-direction: column;
+
+    .btn-close {
+      background-color: rgba(#777, 0.5);
+      top: -0.2rem;
+      right: -1rem;
+    }
 
     .image-box {
       width: 100%;
@@ -93,7 +114,6 @@
 
       img {
         max-width: 100vw;
-        // height: 100%;
       }
     }
   }
