@@ -1,8 +1,6 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Subscription } from 'rxjs';
 
@@ -32,55 +30,17 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
     private bottomSheet: MatBottomSheet
   ) {}
 
-  announcer = inject(LiveAnnouncer);
-
-  add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.searchTags.push(value);
-    }
-    event.chipInput!.clear();
-  }
-
-  remove(tag: string): void {
-    const index = this.searchTags.indexOf(tag);
-    if (index >= 0) {
-      this.searchTags.splice(index, 1);
-      this.announcer.announce(`Removed ${tag}`);
-    }
-  }
-
-  edit(tag: string, event: MatChipEditedEvent) {
-    const value = event.value.trim();
-    if (!value) {
-      this.remove(tag);
-      return;
-    }
-    const index = this.searchTags.indexOf(tag);
-    if (index >= 0) {
-      this.searchTags[index] = value;
-    }
-  }
-
   get isMobile() {
     return window.innerWidth < 768;
   }
 
   get filteredImages() {
-    return (
-      this.images
-        // .filter(image => image.tags.join(', ').toLowerCase().includes(this.searchTag.trim().toLowerCase()))
-        .filter(image => {
-          if (this.searchTags.length === 0) return true;
-          return image.tags.some(tag =>
-            this.searchTags.some(searchTag => searchTag.toLowerCase() === tag.toLowerCase())
-          );
-        })
-        .sort((a: Image, b: Image) => {
-          if (this.sortBy === 'name') return a.name.localeCompare(b.name, 'en-IN', { sensitivity: 'base' });
-          return (a[this.sortBy] as number) - (b[this.sortBy] as number);
-        })
-    );
+    return this.images
+      .filter(image => image.tags.join(', ').toLowerCase().includes(this.searchTag.trim().toLowerCase()))
+      .sort((a: Image, b: Image) => {
+        if (this.sortBy === 'name') return a.name.localeCompare(b.name, 'en-IN', { sensitivity: 'base' });
+        return (a[this.sortBy] as number) - (b[this.sortBy] as number);
+      });
   }
 
   ngOnInit() {
@@ -95,8 +55,8 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
   }
 
   openUploadDialog(image: Image | null = null) {
-    if (this.isMobile) this.bottomSheet.open(UploadImageDialogComponent, { data: image });
-    else this.dialog.open(UploadImageDialogComponent, { data: image });
+    if (this.isMobile) this.bottomSheet.open(UploadImageDialogComponent, { data: image, disableClose: true });
+    else this.dialog.open(UploadImageDialogComponent, { data: image, disableClose: true });
   }
 
   openViewImageDialog(image: Image) {
@@ -105,8 +65,8 @@ export class ImageGalleryComponent implements OnInit, OnDestroy {
   }
 
   openTagDialog(image: Image) {
-    if (this.isMobile) this.bottomSheet.open(TagDialogComponent, { data: image });
-    else this.dialog.open(TagDialogComponent, { data: image });
+    if (this.isMobile) this.bottomSheet.open(TagDialogComponent, { data: image, disableClose: true });
+    else this.dialog.open(TagDialogComponent, { data: image, disableClose: true });
   }
 
   openDeleteDialog(image: Image) {

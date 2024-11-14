@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   }
 
   openUploadDialog() {
-    if (this.isMobile) this.bottomSheet.open(UploadImageDialogComponent);
-    else this.dialog.open(UploadImageDialogComponent);
+    if (this.isMobile) this.bottomSheet.open(UploadImageDialogComponent, { disableClose: true });
+    else this.dialog.open(UploadImageDialogComponent, { disableClose: true });
   }
 }

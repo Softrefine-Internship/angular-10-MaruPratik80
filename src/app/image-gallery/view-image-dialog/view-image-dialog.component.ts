@@ -30,8 +30,8 @@ export class ViewImageDialogComponent implements OnInit {
   }
 
   openTagDialog() {
-    if (this.isMobile) this.bottomSheet.open(TagDialogComponent, { data: this.image });
-    else this.dialog.open(TagDialogComponent, { data: this.image });
+    if (this.isMobile) this.bottomSheet.open(TagDialogComponent, { data: this.image, disableClose: true });
+    else this.dialog.open(TagDialogComponent, { data: this.image, disableClose: true });
   }
 
   close() {
